@@ -18,8 +18,6 @@ class SinglethreadLoadingBenchmark
 {
 	static inline var fileSampleCount:Int = 12;
 	var diskStartTime:Float;
-	var processStartTime:Float;
-	var totalTime:Float = 0.0;
 	var filesLoaded:Int = 0;	
 	var fileStream:FileStream;
 	var completeCallback:Void->Void;
@@ -31,7 +29,10 @@ class SinglethreadLoadingBenchmark
 	}
 	
 	function readNextFile():Void{
-		var file:File = File.applicationDirectory.resolvePath("test_file_" + filesLoaded + "(90mb).png");	
+		var file:File = File.applicationDirectory.resolvePath("test_file_" + filesLoaded + "(90mb).png");
+		if(filesLoaded == 0){
+			diskStartTime = Sys.time();
+		}
 		fileStream.open(file, READ);
 		_onComplete();
 	}
@@ -46,9 +47,7 @@ class SinglethreadLoadingBenchmark
 
 	function _onComplete():Void
 	{
-		var dt:Float = Timer.stamp() - diskStartTime;
 		//Sys.println("Disk Time: " + Std.string(dt));
-		totalTime+= dt;
 		filesLoaded++;		
 
 		_checkForTotalCompletion();
@@ -58,7 +57,7 @@ class SinglethreadLoadingBenchmark
 	{
 		if (filesLoaded == fileSampleCount)
 		{
-			Sys.println("Singlethreaded Total Loading Time: " + totalTime);
+			Sys.println("Singlethreaded Total Loading Time: " + Std.string(Sys.time() - diskStartTime));
 			
 			if(completeCallback != null){
 				completeCallback();

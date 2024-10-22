@@ -18,15 +18,14 @@ class MultithreadLoadingBenchmark
 {
 	static inline var fileSampleCount:Int = 12;
 	var diskStartTime:Float;
-	var processStartTime:Float;
-	
-	var totalTime:Float = 0.0;
-	
 	var filesLoaded:Int = 0;	
 	var completeCallback:Void->Void;
 	
+	
+	
 	public function new()
 	{
+		diskStartTime = Sys.time();
 		for (i in 0...fileSampleCount)
 		{
 			var file:File = File.applicationDirectory.resolvePath("test_file_" + i + "(90mb).png");
@@ -34,16 +33,12 @@ class MultithreadLoadingBenchmark
 			fileStream.addEventListener(Event.COMPLETE, _onComplete);
 			fileStream.addEventListener(ProgressEvent.PROGRESS, _onProgress);
 			fileStream.addEventListener(IOErrorEvent.IO_ERROR, _onError);
-			diskStartTime = Timer.stamp();
 			fileStream.openAsync(file, READ);
 		}	
 	}
 
 	function _onComplete(evt:Event):Void
-	{
-		var dt:Float = Timer.stamp() - diskStartTime;
-		//Sys.println("Disk Time: " + Std.string(dt));
-		totalTime+= dt;
+	{	
 		filesLoaded++;
 		
 		_checkForTotalCompletion();
@@ -51,7 +46,7 @@ class MultithreadLoadingBenchmark
 	
 	function _checkForTotalCompletion():Void{
 		if (filesLoaded == fileSampleCount){
-			Sys.println("Multithreaded Total Loading Time: " + totalTime);
+			Sys.println("Multithreaded Total Loading Time: " + Std.string(Sys.time() - diskStartTime));
 			
 			if(completeCallback != null){
 				completeCallback();
