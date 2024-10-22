@@ -17,10 +17,11 @@
 	<haxelib name="openfl" />
 	
 	<!-- assets -->
-	<icon path="assets/openfl.svg" />
 	<assets path="assets" rename="" />
+	<template path="\custom_assets\"/>
 	
 	<!-- optimize output
 	<haxeflag name="-dce full" /> -->
+	<haxedef name="HXCPP_CHECK_POINTER" />
 	
 </project>

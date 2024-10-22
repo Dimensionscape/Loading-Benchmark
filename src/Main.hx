@@ -7,14 +7,19 @@ import openfl.Lib;
  * ...
  * @author Christopher Speciale
  */
-class Main extends Sprite 
+class Main extends Sprite
 {
 
-	public function new() 
+	public function new()
 	{
 		super();
-		
+
 		new LoadingBenchmark();
+		new SinglethreadLoadingBenchmark().onComplete(()->{
+			new MultithreadLoadingBenchmark();
+		});
+
 	}
 
 }
+
